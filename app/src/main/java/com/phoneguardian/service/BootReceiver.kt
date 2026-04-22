@@ -22,11 +22,15 @@ class BootReceiver : BroadcastReceiver() {
             Log.d(TAG, "Boot completed, starting monitor service")
 
             // 启动监控前台服务
-            val serviceIntent = Intent(context, MonitorService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(serviceIntent)
-            } else {
-                context.startService(serviceIntent)
+            try {
+                val serviceIntent = Intent(context, MonitorService::class.java)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(serviceIntent)
+                } else {
+                    context.startService(serviceIntent)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to start MonitorService on boot", e)
             }
 
             // 重新调度每日汇总任务
